@@ -52,10 +52,15 @@ namespace WpfParser
                 default:
                     _parser.StartPage = 1;
                     _parser.EndPage = pagesCount;
+
                     PagesCountLabel.Content = $"Данный раздел содержит {pagesCount} страниц.";
                     Informer.RaiseOnResult("Анализ количества страниц окончен.");
                     PagesCountLabel.Visibility = Visibility.Visible;
                     StartParseButton.Visibility = Visibility.Visible;
+
+                    _parser.StartPage = 1;
+                    _parser.EndPage = pagesCount;
+
                     break;
             }
         }
