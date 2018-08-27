@@ -23,7 +23,10 @@ namespace WpfParser
                 await Application.Current.Dispatcher.BeginInvoke(
                     new Action(() => dataItemsLog.Insert(0, result)));
                 if (result.Result == "Все страницы просканированы!")
+                {
                     StartParseButton.IsEnabled = true;
+                    StartParsePagesButton.IsEnabled = true;
+                }
             };
             _parser.PagesParseCompleted += PagesParseCompleted;
         }
@@ -77,6 +80,7 @@ namespace WpfParser
             _parser.FileName = _dlg.FileName;
             _parser.Abort = false;
             StartParseButton.IsEnabled = false;
+            StartParsePagesButton.IsEnabled = false;
             _parser.StartParse();
         }
 
@@ -84,6 +88,7 @@ namespace WpfParser
         {
             _parser.Abort = true;
             StartParseButton.IsEnabled = true;
+            StartParsePagesButton.IsEnabled = true;
         }
     }
 }

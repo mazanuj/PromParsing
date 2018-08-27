@@ -19,7 +19,7 @@
         <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
         <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox" TextChanged="UrlTextBox_OnTextChanged"/>
         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Button  Margin="5,0,5,0" HorizontalAlignment="Left" Content="Анализ количества страниц" Click="StartParsePagesButton_OnClick"/>
+            <Button  Margin="5,0,5,0" HorizontalAlignment="Left" Name="StartParsePagesButton" Content="Анализ количества страниц" Click="StartParsePagesButton_OnClick"/>
         </StackPanel>
         <Label Grid.Row="3" Margin="5" Name="PagesCountLabel" Visibility="Hidden"/>
         <StackPanel Grid.Row="4" HorizontalAlignment="Left" Orientation="Horizontal">
@@ -27,7 +27,7 @@
             <Button Name="AbortButton"  Margin="5" IsEnabled="False" Content="Прервать сканирование" Click="AbortButton_OnClick"/>
         </StackPanel>
         <DataGrid Grid.Row="5" HorizontalAlignment="Stretch"
-                  x:Name="DataGridLog"
+                  Name="DataGridLog"
                   RenderOptions.ClearTypeHint="Enabled"
                   TextOptions.TextFormattingMode="Display"
                   FontSize="13"
