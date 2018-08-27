@@ -29,7 +29,6 @@ namespace WpfParser
                 var html = await _client.GetStringAsync(ParseUrl);
                 var htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(html);
-
                 var pagesCount = htmlDocument
                     .DocumentNode.Descendants("a")
                     .Where(node => node.GetAttributeValue("class", "")
@@ -76,19 +75,25 @@ namespace WpfParser
                 .DocumentNode.Descendants("div")
                 .Where(node => node.GetAttributeValue("class", "")
                     .Equals("x-gallery-tile__content")).ToArray();
-
-            foreach (var item in items)
+            try
             {
-                _writer?.Write(item
-                    .Descendants("a").FirstOrDefault(node => node.GetAttributeValue("class", "")
-                        .Equals("x-gallery-tile__name"))?.InnerText.Trim() + "\t", Encoding.UTF8);
-                _writer?.Write(item
-                    .Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "")
-                        .Contains("x-gallery-tile__price"))?.InnerText.Trim() + "\t", Encoding.UTF8);
-                _writer?.WriteLine(item
-                    .Descendants("a").FirstOrDefault(node => node.GetAttributeValue("class", "")
-                        .Equals("x-gallery-tile__name"))?.GetAttributeValue("href", "") 
-                                   ?? throw new InvalidOperationException(), Encoding.UTF8);
+                foreach (var item in items)
+                {
+                    _writer?.Write(item
+                                       .Descendants("a").FirstOrDefault(node => node.GetAttributeValue("class", "")
+                                           .Equals("x-gallery-tile__name"))?.InnerText.Trim() + "\t", Encoding.UTF8);
+                    _writer?.Write(item
+                                       .Descendants("div").FirstOrDefault(node => node.GetAttributeValue("class", "")
+                                           .Contains("x-gallery-tile__price"))?.InnerText.Trim() + "\t", Encoding.UTF8);
+                    _writer?.WriteLine(item
+                                           .Descendants("a").FirstOrDefault(node => node.GetAttributeValue("class", "")
+                                               .Equals("x-gallery-tile__name"))?.GetAttributeValue("href", "")
+                                       ?? throw new InvalidOperationException(), Encoding.UTF8);
+                }
+            }
+            catch (Exception exception)
+            {
+                OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
             }
         }
 
