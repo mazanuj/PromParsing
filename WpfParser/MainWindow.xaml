@@ -1,0 +1,49 @@
+﻿<controls:MetroWindow x:Class="WpfParser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:WpfParser"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="Prom Parser" MinHeight="500" MinWidth="600" WindowStartupLocation="CenterScreen" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
+        <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox" TextChanged="UrlTextBox_OnTextChanged"/>
+        <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button  Margin="5,0,5,0" HorizontalAlignment="Left" Content="Анализ количества страниц" Click="StartParsePagesButton_OnClick"/>
+        </StackPanel>
+        <Label Grid.Row="3" Margin="5" Name="PagesCountLabel" Content=""/>
+        <StackPanel Grid.Row="4" HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button Name="StartParseButton" Margin="5" Content="Начать сканирование" Click="StartParseButton_OnClick"/>
+            <Button Name="AbortButton"  Margin="5" Content="Прервать сканирование" Click="AbortButton_OnClick"/>
+        </StackPanel>
+        <DataGrid Grid.Row="5" HorizontalAlignment="Stretch"
+                  x:Name="DataGridLog"
+                  RenderOptions.ClearTypeHint="Enabled"
+                  TextOptions.TextFormattingMode="Display"
+                  FontSize="13"
+                  Margin="5"
+                  SelectionUnit="FullRow"
+                  ItemsSource="{Binding Path = DataItemsLog}"
+                  AutoGenerateColumns="False"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Auto"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All" d:DataContext="{d:DesignInstance local:MainWindow}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Date" Binding="{Binding Date}" MinWidth="70"/>
+                <DataGridTextColumn Header="Result" Binding="{Binding Result}" MinWidth="200"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</controls:MetroWindow>
