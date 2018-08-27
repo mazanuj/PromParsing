@@ -6,7 +6,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Prom Parser" MinHeight="500" MinWidth="600" WindowStartupLocation="CenterScreen" >
+        Title="Prom Parser" MinHeight="500" MinWidth="600" 
+        WindowStartupLocation="CenterScreen" Icon="Resources/main.ico">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+                <Button Click="LaunchOnlineTranslationsOnGitHub"
+                        ToolTip="OnlineTranslations on GitHub">
+                    <Rectangle Width="22"
+                               Height="22"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform"
+                                         Visual="{StaticResource appbar_github}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

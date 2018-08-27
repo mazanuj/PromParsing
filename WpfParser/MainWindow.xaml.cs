@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
@@ -89,6 +90,11 @@ namespace WpfParser
             _parser.Abort = true;
             StartParseButton.IsEnabled = true;
             StartParsePagesButton.IsEnabled = true;
+        }
+
+        private void LaunchOnlineTranslationsOnGitHub(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/mazanuj/PromParsing");
         }
     }
 }
