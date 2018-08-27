@@ -11,7 +11,7 @@ namespace WpfParser
     internal class Parser
     {
         public string ParseUrl { private get; set; }
-        public int StartPage { private get; set; }
+        public int StartPage { private get; set; } = 1;
         public int EndPage { private get; set; }
         public string FileName { private get; set; }
         public bool Abort { private get; set; }
@@ -20,6 +20,7 @@ namespace WpfParser
         private StreamWriter _writer;
 
         public event Action<int> PagesParseCompleted;
+        public event Action<LogItem> OnLogResult;
 
         public async void ParsePages()
         {
@@ -35,9 +36,9 @@ namespace WpfParser
                         .Equals("x-pager__item")).ToArray();
                 PagesParseCompleted?.Invoke(pagesCount.Length != 0 ? int.Parse(pagesCount[pagesCount.Length - 1].InnerText) : 0);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Informer.RaiseOnResult(e.Message);
+                OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
             }
         }
 
@@ -49,17 +50,17 @@ namespace WpfParser
                 {
                     if (Abort)
                     {
-                        Informer.RaiseOnResult("Сканирование прервано!");
+                        OnLogResult?.Invoke(new LogItem { Status = "Warning", Result = "Сканирование прервано!" });
                         return;
                     }
                     var html = await GetSourceByPage(i);
                     var htmlDocument = new HtmlDocument();
                     htmlDocument.LoadHtml(html);
                     Parse(htmlDocument);
-                    Informer.RaiseOnResult($"Готова страница № {i}");
+                    OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Готова страница № {i}"});
                 }
             }
-            Informer.RaiseOnResult("Все страницы просканированы!");
+            OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все страницы просканированы!"});
         }
 
         private async Task<string> GetSourceByPage(int page)
@@ -89,6 +90,11 @@ namespace WpfParser
                         .Equals("x-gallery-tile__name"))?.GetAttributeValue("href", "") 
                                    ?? throw new InvalidOperationException(), Encoding.UTF8);
             }
+        }
+
+        public void RaiseOnResult(string status, string result)
+        {
+            OnLogResult?.Invoke(new LogItem { Status = status, Result = result });
         }
     }
 }
