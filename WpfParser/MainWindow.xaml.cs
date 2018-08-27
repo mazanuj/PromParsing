@@ -50,17 +50,12 @@ namespace WpfParser
                     _parser.EndPage = 1;
                     break;
                 default:
-                    _parser.StartPage = 1;
-                    _parser.EndPage = pagesCount;
-
                     PagesCountLabel.Content = $"Данный раздел содержит {pagesCount} страниц.";
                     Informer.RaiseOnResult("Анализ количества страниц окончен.");
                     PagesCountLabel.Visibility = Visibility.Visible;
                     StartParseButton.Visibility = Visibility.Visible;
-
                     _parser.StartPage = 1;
                     _parser.EndPage = pagesCount;
-
                     break;
             }
         }
@@ -72,9 +67,9 @@ namespace WpfParser
                 _parser.ParseUrl = new UriBuilder(UrlTextBox.Text).Uri.AbsoluteUri;
                 _parser.ParsePages();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Informer.RaiseOnResult("Невозможно выполнить разбор имени хоста!");
+                Informer.RaiseOnResult(e.Message);
             }
         }
 
@@ -99,7 +94,7 @@ namespace WpfParser
 
         private void StartParseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Informer.RaiseOnResult("Начинаю сканирование указанных страниц.");
+            Informer.RaiseOnResult("Начинаю сканирование.");
             Parse();
         }
 

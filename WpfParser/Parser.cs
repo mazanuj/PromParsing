@@ -35,9 +35,9 @@ namespace WpfParser
                         .Equals("x-pager__item")).ToArray();
                 PagesParseCompleted?.Invoke(pagesCount.Length != 0 ? int.Parse(pagesCount[pagesCount.Length - 1].InnerText) : 0);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Informer.RaiseOnResult("Невозможно выполнить разбор имени хоста!");
+                Informer.RaiseOnResult(e.Message);
             }
         }
 
