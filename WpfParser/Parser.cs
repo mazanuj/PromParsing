@@ -43,11 +43,6 @@ namespace WpfParser
 
         public async void StartParse()
         {
-            if (StartPage > EndPage)
-            {
-                Informer.RaiseOnResult("Начальная страница не может быть больше конечной!");
-                return;
-            }
             using (_writer = File.CreateText(FileName))
             {
                 for (var i = StartPage; i <= EndPage; i++)
