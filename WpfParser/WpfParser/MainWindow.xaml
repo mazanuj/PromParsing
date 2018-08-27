@@ -1,0 +1,44 @@
+﻿<controls:MetroWindow x:Class="WpfParser.MainWindow"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Prom Parser" MinHeight="400" MinWidth="550" Icon="D:\Programming\WPF\WpfParser\WpfParser\icon.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Margin="5" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
+        <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox"/>
+        <Button Grid.Row="2" Name="StartParsePage" Margin="5,0,5,0" HorizontalAlignment="Left" Content="Анализ количества страниц" Click="StartParsePage_Click"/>
+        <Label Grid.Row="3" Margin="5" Name="PagesCountLabel" Content=""/>
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Margin="5" Name="StartLabel" Content="С:"/>
+            <Label Grid.Row="0" Grid.Column="1" Margin="5" Name="EndLabel" Content="По:"/>
+            <ComboBox Grid.Row="1" Grid.Column="0" Margin="5" Name="StartPageBox"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="EndPageBox"/>
+        </Grid>
+        <StackPanel Grid.Row="5" HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button Name="StartParseButton" Margin="5" Content="Начать сканирование" Click="StartParseButton_Click"/>
+            <Button Name="AbortButton" Margin="5" Content="Прервать сканирование" Click="AbortButton_Click"/>
+        </StackPanel>
+        <TextBox Grid.Row="6" Margin="5" Name="LogTextBox" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextChanged="LogTextBox_TextChanged"/>
+    </Grid>
+</controls:MetroWindow>
+
