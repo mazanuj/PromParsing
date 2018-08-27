@@ -74,10 +74,10 @@ namespace WpfParser
 
         private void StartParseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            _parser.RaiseOnResult("OK", "Начинаю сканирование.");
             _dlg.FileName = string.Empty;
             if (_dlg.ShowDialog() != true) return;
             _parser.FileName = _dlg.FileName;
+            _parser.RaiseOnResult("OK", "Начинаю сканирование.");
             _parser.Abort = false;
             StartParseButton.IsEnabled = false;
             StartParsePagesButton.IsEnabled = false;
