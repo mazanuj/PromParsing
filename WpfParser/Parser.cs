@@ -10,7 +10,7 @@ namespace WpfParser
 {
     internal class Parser
     {
-        public string ParseUrl { private get; set; }
+        public string ParseUrl { get; set; }
         public int StartPage { private get; set; } = 1;
         public int EndPage { private get; set; }
         public string FileName { private get; set; }
@@ -19,7 +19,6 @@ namespace WpfParser
         private readonly HttpClient _client = new HttpClient();
         private StreamWriter _writer;
 
-        public event Action<int> PagesParseCompleted;
         public event Action<LogItem> OnLogResult;
 
         public async void ParsePages()
@@ -33,7 +32,7 @@ namespace WpfParser
                     .DocumentNode.Descendants("a")
                     .Where(node => node.GetAttributeValue("class", "")
                         .Equals("x-pager__item")).ToArray();
-                PagesParseCompleted?.Invoke(pagesCount.Length != 0 ? int.Parse(pagesCount[pagesCount.Length - 1].InnerText) : 0);
+                EndPage = pagesCount.Length != 0 ? int.Parse(pagesCount[pagesCount.Length - 1].InnerText) : 0;
             }
             catch (Exception exception)
             {
@@ -56,7 +55,7 @@ namespace WpfParser
                     var htmlDocument = new HtmlDocument();
                     htmlDocument.LoadHtml(html);
                     Parse(htmlDocument);
-                    OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Готова страница № {i}"});
+                    OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Готова страница № {i} из {EndPage}" });
                 }
             }
             OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все страницы просканированы!"});

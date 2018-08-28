@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace WpfParser
 {
@@ -11,8 +10,7 @@ namespace WpfParser
     {
         private readonly Parser _parser = new Parser();
 
-        private readonly SaveFileDialog _dlg =
-            new SaveFileDialog {DefaultExt = ".txt", Filter = "Text documents (.txt)|*.txt"};
+        private readonly SaveFileDialog _dlg = new SaveFileDialog();
 
         public MainWindow()
         {
@@ -25,47 +23,40 @@ namespace WpfParser
                     new Action(() => dataItemsLog.Insert(0, result)));
                 if (result.Result == "Все страницы просканированы!")
                 {
+                    UrlTextBox.IsEnabled = true;
                     StartParseButton.IsEnabled = true;
-                    StartParsePagesButton.IsEnabled = true;
+                    AbortButton.IsEnabled = false;
                 }
             };
-            _parser.PagesParseCompleted += PagesParseCompleted;
         }
 
-        private void PagesParseCompleted(int pagesCount)
+        private void StartParseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            switch (pagesCount)
-            {
-                case 0:
-                    PagesCountLabel.Content = "Данный раздел содержит одну страницу";
-                    _parser.EndPage = 1;
-                    break;
-                default:
-                    PagesCountLabel.Content = $"Данный раздел содержит {pagesCount} страниц.";
-                    _parser.EndPage = pagesCount;
-                    break;
-            }
-            PagesCountLabel.Visibility = Visibility.Visible;
-            StartParseButton.IsEnabled = true;
-            AbortButton.IsEnabled = true;
-            _parser.RaiseOnResult("OK", "Анализ количества страниц окончен.");
-        }
-
-        private void UrlTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            PagesCountLabel.Visibility = Visibility.Hidden;
-            StartParseButton.IsEnabled = false;
-            AbortButton.IsEnabled = false;
-        }
-
-        private void StartParsePagesButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _parser.RaiseOnResult("OK", "Начинаю анализ количества страниц.");
             try
             {
-                if (!UrlTextBox.Text.Contains("prom.ua")) throw new Exception("Парсер предназначен только для сайта Prom.ua");
                 _parser.ParseUrl = new UriBuilder(UrlTextBox.Text).Uri.AbsoluteUri;
+                if (!UrlTextBox.Text.Contains("prom.ua")) throw new Exception("Парсер предназначен только для сайта Prom.ua");
                 _parser.ParsePages();
+                _dlg.FileName = _parser.ParseUrl.Substring(_parser.ParseUrl.IndexOf("prom.ua/", StringComparison.Ordinal) + 8, 
+                    _parser.ParseUrl.Length - _parser.ParseUrl.IndexOf("prom.ua/", StringComparison.Ordinal) - 8);
+                if (TxtRadioButton.IsChecked != null && (bool) TxtRadioButton.IsChecked)
+                {
+                    _dlg.DefaultExt = ".txt";
+                    _dlg.Filter = "Text documents (.txt)|*.txt";
+                }
+                else
+                {
+                    _dlg.DefaultExt = ".xlsx";
+                    _dlg.Filter = "Text documents (.xslx)|*.xslx";
+                }
+                if (_dlg.ShowDialog() != true) return;
+                _parser.FileName = _dlg.FileName;
+                _parser.RaiseOnResult("OK", "Начинаю сканирование.");
+                _parser.Abort = false;
+                AbortButton.IsEnabled = true;
+                StartParseButton.IsEnabled = false;
+                UrlTextBox.IsEnabled = false;
+                _parser.StartParse();
             }
             catch (Exception exception)
             {
@@ -73,26 +64,15 @@ namespace WpfParser
             }
         }
 
-        private void StartParseButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _dlg.FileName = string.Empty;
-            if (_dlg.ShowDialog() != true) return;
-            _parser.FileName = _dlg.FileName;
-            _parser.RaiseOnResult("OK", "Начинаю сканирование.");
-            _parser.Abort = false;
-            StartParseButton.IsEnabled = false;
-            StartParsePagesButton.IsEnabled = false;
-            _parser.StartParse();
-        }
-
         private void AbortButton_OnClick(object sender, RoutedEventArgs e)
         {
             _parser.Abort = true;
             StartParseButton.IsEnabled = true;
-            StartParsePagesButton.IsEnabled = true;
+            UrlTextBox.IsEnabled = true;
+            AbortButton.IsEnabled = false;
         }
 
-        private void LaunchOnlineTranslationsOnGitHub(object sender, RoutedEventArgs e)
+        private void LaunchPromParserOnGitHub(object sender, RoutedEventArgs e)
         {
             Process.Start("https://github.com/mazanuj/PromParsing");
         }

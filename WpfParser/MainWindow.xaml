@@ -10,8 +10,8 @@
         WindowStartupLocation="CenterScreen" Icon="Resources/main.ico">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-                <Button Click="LaunchOnlineTranslationsOnGitHub"
-                        ToolTip="OnlineTranslations on GitHub">
+                <Button Click="LaunchPromParserOnGitHub"
+                        ToolTip="Prom Parser on GitHub">
                     <Rectangle Width="22"
                                Height="22"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
@@ -28,21 +28,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
-        <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox" TextChanged="UrlTextBox_OnTextChanged"/>
+        <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox"/>
         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Button  Margin="5,0,5,0" HorizontalAlignment="Left" Name="StartParsePagesButton" Content="Анализ количества страниц" Click="StartParsePagesButton_OnClick"/>
-        </StackPanel>
-        <Label Grid.Row="3" Margin="5" Name="PagesCountLabel" Visibility="Hidden"/>
-        <StackPanel Grid.Row="4" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Button Name="StartParseButton" Margin="5" IsEnabled="False" Content="Начать сканирование" Click="StartParseButton_OnClick"/>
+            <Button Name="StartParseButton" Margin="5" Content="Начать сканирование" Click="StartParseButton_OnClick"/>
             <Button Name="AbortButton"  Margin="5" IsEnabled="False" Content="Прервать сканирование" Click="AbortButton_OnClick"/>
+            <RadioButton Name="TxtRadioButton" Margin="5" Content="txt" IsChecked="True"/>
+            <RadioButton Name="XlsxRadioButton" Margin="5" Content="xlsx"/>
         </StackPanel>
-        <DataGrid Grid.Row="5" HorizontalAlignment="Stretch"
+        <DataGrid Grid.Row="3" HorizontalAlignment="Stretch"
                   Name="DataGridLog"
                   RenderOptions.ClearTypeHint="Enabled"
                   TextOptions.TextFormattingMode="Display"
