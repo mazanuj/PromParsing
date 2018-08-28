@@ -6,6 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
+        ResizeMode="CanResizeWithGrip"
+        GlowBrush="{DynamicResource AccentColorBrush}"
         Title="Prom Parser" MinHeight="500" MinWidth="600" 
         WindowStartupLocation="CenterScreen" Icon="Resources/main.ico">
     <controls:MetroWindow.RightWindowCommands>
@@ -33,8 +35,28 @@
         <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
         <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox"/>
         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Button Name="StartParseButton" Margin="5" Content="Начать сканирование" Click="StartParseButton_OnClick"/>
-            <Button Name="AbortButton"  Margin="5" IsEnabled="False" Content="Прервать сканирование" Click="AbortButton_OnClick"/>
+            <Button Name="StartParseButton" Margin="5" Click="StartParseButton_OnClick" 
+                    Style="{StaticResource AccentedSquareButtonStyle}">
+                <Rectangle Width="50"
+                           Height="50"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="None"
+                                     Visual="{StaticResource appbar_control_play}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button Name="AbortButton"  Margin="5" IsEnabled="False" Click="AbortButton_OnClick" 
+                    Style="{StaticResource AccentedSquareButtonStyle}">
+                <Rectangle Width="50"
+                           Height="50"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="None"
+                                     Visual="{StaticResource appbar_control_stop}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
             <RadioButton Name="TxtRadioButton" Margin="5" Content="txt" IsChecked="True"/>
             <RadioButton Name="XlsxRadioButton" Margin="5" Content="xlsx"/>
         </StackPanel>
