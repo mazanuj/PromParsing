@@ -21,12 +21,11 @@ namespace WpfParser
             {
                 await Application.Current.Dispatcher.BeginInvoke(
                     new Action(() => dataItemsLog.Insert(0, result)));
-                if (result.Result == "Все страницы просканированы!")
-                {
-                    UrlTextBox.IsEnabled = true;
-                    StartParseButton.IsEnabled = true;
-                    AbortButton.IsEnabled = false;
-                }
+                if (result.Result != "Все страницы просканированы!") return;
+                UrlTextBox.IsEnabled = true;
+                StartParseButton.IsEnabled = true;
+                AbortButton.IsEnabled = false;
+                _parser.EndPage = 1;
             };
         }
 
@@ -47,7 +46,7 @@ namespace WpfParser
                 else
                 {
                     _dlg.DefaultExt = ".xlsx";
-                    _dlg.Filter = "Text documents (.xslx)|*.xslx";
+                    _dlg.Filter = "Text documents (.xlsx)|*.xlsx";
                 }
                 if (_dlg.ShowDialog() != true) return;
                 _parser.FileName = _dlg.FileName;
