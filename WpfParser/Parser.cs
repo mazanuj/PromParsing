@@ -141,13 +141,6 @@ namespace WpfParser
             OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все страницы просканированы!"});
         }
 
-
-
-
-
-
-
-
         public void RaiseOnResult(string status, string result)
         {
             OnLogResult?.Invoke(new LogItem { Status = status, Result = result });
