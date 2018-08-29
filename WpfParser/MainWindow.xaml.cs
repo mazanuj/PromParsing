@@ -22,7 +22,7 @@ namespace WpfParser
         private async void OnLogResult(LogItem logItem)
         {
             await Application.Current.Dispatcher.BeginInvoke(new Action(() => _dataItemsLog.Insert(0, logItem)));
-            if (logItem.Result != "Все страницы просканированы!") return;
+            if (logItem.Result != "Все страницы просканированы!" && logItem.Status != "Error") return;
             UrlTextBox.IsEnabled = true;
             StartParseButton.IsEnabled = true;
             AbortButton.IsEnabled = false;

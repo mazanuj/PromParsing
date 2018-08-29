@@ -12,7 +12,7 @@ namespace WpfParser
     internal class Parser
     {
         public string ParseUrl { get; set; }
-        public int EndPage { private get; set; } = 1;
+        public int EndPage { private get; set; }
         public string FileName { private get; set; }
         public bool Abort { private get; set; }
 
