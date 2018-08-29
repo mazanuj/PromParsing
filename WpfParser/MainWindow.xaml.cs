@@ -33,6 +33,9 @@ namespace WpfParser
         {
             try
             {
+                _parser.Proxy = null;
+                if (ProxySwitch.IsChecked == true)
+                    _parser.Proxy = ProxyTextBox.Text;
                 _parser.ParseUrl = new UriBuilder(UrlTextBox.Text).Uri.AbsoluteUri;
                 if (!UrlTextBox.Text.Contains("prom.ua")) throw new Exception("Парсер предназначен только для сайта Prom.ua");
                 _dlg.FileName = _parser.ParseUrl.Substring(_parser.ParseUrl.IndexOf("prom.ua/", StringComparison.Ordinal) + 8, 

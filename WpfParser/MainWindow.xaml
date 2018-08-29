@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         ResizeMode="CanResizeWithGrip"
         GlowBrush="{DynamicResource AccentColorBrush}"
-        Title="Prom Parser" Height="500" Width="600" MinHeight="500" MinWidth="600" 
+        Title="Prom Parser" Height="600" Width="650" MinHeight="600" MinWidth="650" 
         WindowStartupLocation="CenterScreen" Icon="Resources/main.ico">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
@@ -34,7 +34,7 @@
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
         <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox" controls:TextBoxHelper.ClearTextButton="True"/>
-        <StackPanel Grid.Row="2" HorizontalAlignment="Left"  Orientation="Horizontal">
+        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch"  Orientation="Horizontal">
             <Button Name="StartParseButton" Margin="5" Click="StartParseButton_OnClick" 
                     Style="{StaticResource AccentedSquareButtonStyle}">
                 <Rectangle Width="50"
@@ -57,8 +57,18 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-            <RadioButton Name="TxtRadioButton" Margin="5" Content="txt" FontSize="20" IsChecked="True"/>
-            <RadioButton Name="XlsxRadioButton" Margin="5" Content="xlsx" FontSize="20"/>
+            <RadioButton Name="XlsxRadioButton" Margin="5" Content="xlsx" FontSize="20" IsChecked="True"/>
+            <RadioButton Name="TxtRadioButton" Margin="5" Content="txt" FontSize="20"/>
+            <controls:ToggleSwitch Name="ProxySwitch" Header="Use Proxy" Margin="50,5,5,5"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Margin="5" Content="Proxy: http://IpAddress:port" FontSize="14"></Label>
+                <TextBox Grid.Row="1" Margin="5" Name="ProxyTextBox" controls:TextBoxHelper.ClearTextButton="True"
+                         IsEnabled="{Binding ElementName=ProxySwitch, Path=IsChecked}"/>
+            </Grid>
         </StackPanel>
         <DataGrid Grid.Row="3" HorizontalAlignment="Stretch"
                   Name="DataGridLog"
