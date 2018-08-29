@@ -2,8 +2,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
@@ -16,8 +18,8 @@ namespace WpfParser
         public string FileName { private get; set; }
         public bool Abort { private get; set; }
 
-        private readonly HttpClient _client = new HttpClient();
-        private readonly HtmlDocument _htmlDocument = new HtmlDocument();
+        private HttpClient _client;
+        private HtmlDocument _htmlDocument;
         private FileStream _writer;
         private XSSFWorkbook _xssf;
         private ISheet _sheet;
@@ -29,6 +31,13 @@ namespace WpfParser
         {
             try
             {
+                var handler = new HttpClientHandler
+                {
+                    Proxy = new WebProxy("http://62.80.179.226:3128"),
+                    UseProxy = true,
+                };
+                _client = new HttpClient(handler);
+                _htmlDocument = new HtmlDocument();
                 _htmlDocument.LoadHtml(await _client.GetStringAsync(ParseUrl));
             }
             catch (Exception exception)
@@ -64,17 +73,21 @@ namespace WpfParser
                         EndPage = 1;
                         return;
                     }
+                    Thread.Sleep(500);
+                    _htmlDocument = new HtmlDocument();
                     _htmlDocument.LoadHtml(await _client.GetStringAsync(ParseUrl + ";" + i));
                     var pageUrls = _htmlDocument
                         .DocumentNode.Descendants("div")
                         .Where(node => node.GetAttributeValue("class", "")
                             .Equals("x-gallery-tile__content")).ToArray();
-
+                    var j = 1;
                     foreach (var pageUrl in pageUrls)
                     {
                         var itemUrl = pageUrl
                             .Descendants("a").FirstOrDefault(node => node.GetAttributeValue("class", "")
                                 .Equals("x-gallery-tile__name"))?.GetAttributeValue("href", "");
+                        Thread.Sleep(500);
+                        _htmlDocument = new HtmlDocument();
                         _htmlDocument.LoadHtml(await _client.GetStringAsync(itemUrl));
                         var items = _htmlDocument
                             .DocumentNode.Descendants("div")
@@ -132,6 +145,7 @@ namespace WpfParser
                                             .Contains("x-product-info__identity-item"))?.InnerText.Trim());
                             }
                         }
+                        OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Готова товар № {j++} на странице {i} из {EndPage}" });
                     }
                     OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Готова страница № {i} из {EndPage}" });
                 }
