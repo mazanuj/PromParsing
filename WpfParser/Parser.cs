@@ -83,8 +83,8 @@ namespace WpfParser
                     CheckCategory("https://prom.ua" + nextCategoryUrl);
                 }
             }
+            OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все категории просканированы!" });
         }
-
 
         private void StartParse(string currentUrl)
         {
@@ -102,7 +102,7 @@ namespace WpfParser
                 if (FileName.Contains("xlsx"))
                     _xssf.Write(_writer);
             }
-            OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все страницы просканированы!"});
+            OnLogResult?.Invoke(new LogItem { Status = "OK", Result = $"Все страницы категории {currentUrl} просканированы!" });
         }
 
         private void ParsePagesCount(string currentUrl)
