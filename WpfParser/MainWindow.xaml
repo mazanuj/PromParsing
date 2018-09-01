@@ -33,7 +33,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Margin="5" FontSize="14" Content="Пожалуйста, введите полную ссылку раздела, который необходимо проанализировать:"/>
-        <TextBox Grid.Row="1" Margin="5" Name="UrlTextBox" controls:TextBoxHelper.ClearTextButton="True"/>
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Width="300" Margin="5" Name="UrlTextBox" controls:TextBoxHelper.ClearTextButton="True"/>
+                <Label Grid.Column="1" Margin="5" Content="или"/>
+                <Button Grid.Column="2" Content="Сканировать весь Prom.ua" Margin="5" Name="ParsePromButton"
+                        Style="{StaticResource AccentedSquareButtonStyle}" Click="ParsePromButton_OnClick"/>
+            </Grid>
+        </StackPanel>
         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch"  Orientation="Horizontal">
             <Button Name="StartParseButton" Margin="5" Click="StartParseButton_OnClick" 
                     Style="{StaticResource AccentedSquareButtonStyle}">
@@ -65,7 +77,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Margin="5" Content="Proxy: http://IpAddress:port" FontSize="14"></Label>
+                <Label Grid.Row="0" Margin="5" Content="Proxy: IpAddress:port" FontSize="14"></Label>
                 <TextBox Grid.Row="1" Margin="5" Name="ProxyTextBox" controls:TextBoxHelper.ClearTextButton="True"
                          IsEnabled="{Binding ElementName=ProxySwitch, Path=IsChecked}"/>
             </Grid>

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System.Collections.Generic;
 
 namespace WpfParser
 {
@@ -22,12 +22,19 @@ namespace WpfParser
         private WebClient _client;
         private HtmlDocument _htmlDocument;
         private FileStream _writer;
-        private readonly XSSFWorkbook _xssf = new XSSFWorkbook();
+        private XSSFWorkbook _xssf;
         private ISheet _sheet;
         private int _indexRow;
         private string _url;
 
         private readonly Regex _regexPhone = new Regex(@"\+\d{3} \(\d{2}\) \d{3}-\d{2}-\d{2}");
+
+        private readonly List<string> _allUrl = new List<string>
+        {
+            "https://prom.ua/consumer-goods",
+            "https://prom.ua/b2b",
+            "https://prom.ua/services"
+        };
 
         public event Action<LogItem> OnLogResult;
 
@@ -36,8 +43,18 @@ namespace WpfParser
             OnLogResult?.Invoke(new LogItem { Status = status, Result = result });
         }
 
+        public void ParseAll()
+        {
+            foreach (var someUrl in _allUrl)
+            {
+                ParseUrl = someUrl;
+                Start();
+            }
+        }
+
         public void Start()
         {
+            if (Abort) return;
             try
             {
                 _client = Proxy != null
@@ -47,6 +64,7 @@ namespace WpfParser
             catch (Exception exception)
             {
                 OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
+                Abort = true;
                 return;
             }
             CheckCategory(ParseUrl);
@@ -58,12 +76,12 @@ namespace WpfParser
             _htmlDocument = new HtmlDocument();
             try
             {
-                Thread.Sleep(1000);
                 _url = _client.DownloadString(categoryUrl);
             }
             catch (Exception exception)
             {
                 OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
+                Abort = true;
                 return;
             }
             _htmlDocument.LoadHtml(_url);
@@ -83,13 +101,14 @@ namespace WpfParser
                     CheckCategory("https://prom.ua" + nextCategoryUrl);
                 }
             }
+            if (Abort) return;
             OnLogResult?.Invoke(new LogItem { Status = "OK", Result = "Все категории просканированы!" });
         }
 
         private void StartParse(string currentUrl)
         {
-            if (Abort) return;
             ParsePagesCount(currentUrl);
+            if (Abort) return;
             using (_writer = File.Create(FileName))
             {
                 if (FileName.Contains("xlsx"))
@@ -97,8 +116,8 @@ namespace WpfParser
                 for (var i = 1; i <= EndPage; i++)
                 {
                     ParsePageLinks(ref i, currentUrl);
+                    if (Abort) return;
                 }
-                if (Abort) return;
                 if (FileName.Contains("xlsx"))
                     _xssf.Write(_writer);
             }
@@ -110,12 +129,12 @@ namespace WpfParser
             _htmlDocument = new HtmlDocument();
             try
             {
-                Thread.Sleep(1000);
                 _url = _client.DownloadString(currentUrl);
             }
             catch (Exception exception)
             {
                 OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
+                Abort = true;
                 return;
             }
             _htmlDocument.LoadHtml(_url);
@@ -128,6 +147,7 @@ namespace WpfParser
 
         private void InitXlsxDoc()
         {
+            _xssf = new XSSFWorkbook();
             _sheet = _xssf.CreateSheet("Prom UA");
             var row = _sheet.CreateRow(_indexRow);
             row.CreateCell(0).SetCellValue("Name");
@@ -142,6 +162,7 @@ namespace WpfParser
             if (FileName.Contains("xlsx"))
                 _xssf.Write(_writer);
             OnLogResult?.Invoke(new LogItem { Status = "Warning", Result = "Сканирование прервано!" });
+            Abort = true;
             EndPage = 1;
         }
 
@@ -150,12 +171,12 @@ namespace WpfParser
             _htmlDocument = new HtmlDocument();
             try
             {
-                Thread.Sleep(1000);
                 _url = _client.DownloadString(currentUrl + ";" + i);
             }
             catch (Exception exception)
             {
                 OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
+                AbortParser();
                 return;
             }
             _htmlDocument.LoadHtml(_url);
@@ -182,12 +203,12 @@ namespace WpfParser
             _htmlDocument = new HtmlDocument();
             try
             {
-                Thread.Sleep(1000);
                 _url = _client.DownloadString(itemUrl);
             }
             catch (Exception exception)
             {
                 OnLogResult?.Invoke(new LogItem { Status = "Error", Result = exception.Message });
+                AbortParser();
                 return;
             }
             _htmlDocument.LoadHtml(_url);
